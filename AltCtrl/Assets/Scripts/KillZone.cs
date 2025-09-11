@@ -11,5 +11,9 @@ public class KillZone : MonoBehaviour
             pooling.pool.Add(other.gameObject);
             other.gameObject.SetActive(false);
         }
+        else if (other.CompareTag("Obstacle"))
+        {
+            Destroy(other.gameObject);
+        }
     }
 }
