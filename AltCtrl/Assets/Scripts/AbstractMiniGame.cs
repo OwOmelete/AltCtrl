@@ -12,7 +12,7 @@ public abstract class AbstractMiniGame : MonoBehaviour
         MiniGameUpdate();
     }
 
-    public void Start()
+    public void OnEnable()
     {
         MiniGameStart();
     }

@@ -4,27 +4,25 @@ namespace MiniGames
 {
     public class Bird : AbstractMiniGame
     {
+        private bool birdOnScreen = false;
         protected override void MiniGameStart()
         {
             Debug.Log("oh un oiseau s'est écrase sur votre parre-brise ^^");
+            birdOnScreen = true;
         }
 
         protected override void MiniGameUpdate()
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                GameManager.INSTANCE.savon = !GameManager.INSTANCE.savon;
-            }
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                if (GameManager.INSTANCE.savon)
+                if (birdOnScreen)
                 {
-                    Debug.Log("bravo vous avez tout netoyé !!! :D");
-                    Win();
+                    Debug.Log("l'oiseau est parti mais il reste les plumes ^^");
+                    birdOnScreen = false;
                 }
                 else
                 {
-                    Debug.Log("oh non vous en avez étalé partout :( ");
+                    Debug.Log("les plumes sont parties aussi :D");
                 }
             }
         }
