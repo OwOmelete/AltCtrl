@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase4;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
     private float lastSpawn;
+    private float lastMiniGame;
 
     private void Awake()
     {
@@ -45,6 +46,12 @@ public class GameManager : MonoBehaviour
         {
             SpawnObstacle();
             lastSpawn = Time.time;
+        }
+
+        if (Time.time - lastMiniGame > miniGameInterval)
+        {
+            LaunchMiniGame();
+            lastMiniGame = Time.time;
         }
     }
     
@@ -99,7 +106,10 @@ public class GameManager : MonoBehaviour
 
     private void LaunchMiniGame()
     {
-        int r = Random.Range(0, miniGamesList.Count);
-        miniGamesList[r].enabled = true;
+        if (miniGamesList.Count > 0)
+        {
+            int r = Random.Range(0, miniGamesList.Count);
+            miniGamesList[r].enabled = true;
+        }
     }
 }
