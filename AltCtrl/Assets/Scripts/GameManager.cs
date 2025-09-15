@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     private List<AbstractMiniGame> miniGamesList = new();
     private float miniGameInterval;
     [SerializeField] private GameObject obstacle;
+    [SerializeField] private GameObject Mountain;
     [SerializeField] private Transform spawnOrigin;
     [SerializeField] private float spawnInterval;
     [SerializeField] private driving driving;
@@ -83,7 +84,12 @@ public class GameManager : MonoBehaviour
     private void SpawnObstacle()
     {
         int r = Random.Range(0, 5);
-        Instantiate(obstacle, getPosition(r), Quaternion.identity);
+        GameObject obs = obstacle;
+        if (r == 1 || r == 2)
+        {
+            obs = Mountain;
+        }
+        Instantiate(obs, getPosition(r), Quaternion.identity);
     }
 
     IEnumerator timer()
