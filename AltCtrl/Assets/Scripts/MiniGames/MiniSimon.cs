@@ -5,6 +5,7 @@ namespace MiniGames
 {
     public class MiniSimon : AbstractMiniGame
     {
+        [SerializeField] private SpriteRenderer[] buttons;
         [SerializeField] private int ChainCount;
         
         private KeyCode[] keyCodes = {
@@ -47,6 +48,11 @@ namespace MiniGames
                     i -= 1;
                 }
             }
+
+            foreach (var i in Chain)
+            {
+                buttons[i - 1].enabled = true;
+            }
         }
 
         protected override void MiniGameUpdate()
@@ -70,6 +76,7 @@ namespace MiniGames
         private void buttonPressed(int number)
         {
             Chain.Remove(number);
+            buttons[number - 1].enabled = false;
         }
 
         public override void Win()

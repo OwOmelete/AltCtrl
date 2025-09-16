@@ -58,13 +58,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8401044413083344872, guid: f64fd13f787066f46a59f9421d21302b, type: 3}
       propertyPath: m_Name
-      value: Montagne1 Variant
+      value: Montagne1ObstacleLeft
       objectReference: {fileID: 0}
     - target: {fileID: 9081111232074324715, guid: f64fd13f787066f46a59f9421d21302b, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 177638127811366223, guid: f64fd13f787066f46a59f9421d21302b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -92,7 +93,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5

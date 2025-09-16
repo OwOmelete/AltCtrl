@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -7,6 +8,7 @@ namespace MiniGames
 {
     public class Simon : AbstractMiniGame
     {
+        [SerializeField] private SpriteRenderer[] buttons;
         private KeyCode[] keyCodes = {
             KeyCode.Keypad1,
             KeyCode.Keypad2,
@@ -19,6 +21,7 @@ namespace MiniGames
             KeyCode.Keypad9
         };
 
+        private bool canInput = true;
         private List<int> Chain = new();
         private int currentProgression = 0;
         public int MaxChainLength;
@@ -63,18 +66,42 @@ namespace MiniGames
 
         protected override void MiniGameUpdate()
         {
-            if (getNumberKey() == Chain[currentProgression])
+            if (canInput)
             {
-                currentProgression += 1;
-                if (currentProgression + 1 > Chain.Count)
+                int i = getNumberKey();
+                if (i == Chain[currentProgression])
                 {
-                    AddNumberToList();
-                }
-                else
-                {
-                    Debug.Log("trouvé");
+                    currentProgression += 1;
+                    if (currentProgression + 1 > Chain.Count)
+                    {
+                        AddNumberToList();
+                    }
+                    else
+                    {
+                        Debug.Log("trouvé");
+                    }
                 }
             }
+        }
+
+        IEnumerator buttonBip(int i)
+        {
+            buttons[i - 1].enabled = true;
+            yield return new WaitForSeconds(0.2f);
+            buttons[i - 1].enabled = false;
+        }
+
+        IEnumerator sequencePlay()
+        {
+            canInput = false;
+            for (int i = 0; i < Chain.Count; i++)
+            {
+                buttons[i].enabled = true;
+                yield return new WaitForSeconds(0.4f);
+                buttons[i].enabled = false;
+                yield return new WaitForSeconds(0.4f);
+            }
+            canInput = true;
         }
 
         public override void Win()

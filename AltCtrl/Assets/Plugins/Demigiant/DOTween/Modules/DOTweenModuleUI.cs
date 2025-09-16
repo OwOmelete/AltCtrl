@@ -97,7 +97,7 @@ namespace DG.Tweening
         /// (NOTE 1: only uses the colors of the gradient, not the alphas - NOTE 2: creates a Sequence, not a Tweener).
         /// Also stores the image as the tween's target so it can be used for filtered operations</summary>
         /// <param name="gradient">The gradient to use</param><param name="duration">The duration of the tween</param>
-        /*public static Sequence DOGradientColor(this Image target, Gradient gradient, float duration)
+        public static Sequence DOGradientColor(this Image target, Gradient gradient, float duration)
         {
             Sequence s = DOTween.Sequence();
             GradientColorKey[] colors = gradient.colorKeys;
@@ -115,7 +115,7 @@ namespace DG.Tweening
             }
             s.SetTarget(target);
             return s;
-        }*/
+        }
 
         #endregion
 
