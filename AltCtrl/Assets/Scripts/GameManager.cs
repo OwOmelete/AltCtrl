@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
 
         if (Time.time - lastMiniGame > miniGameInterval)
         {
-            LaunchMiniGame();
+            //LaunchMiniGame();
             lastMiniGame = Time.time;
         }
     }
@@ -126,6 +126,8 @@ public class GameManager : MonoBehaviour
         if (miniGamesList.Count > 0)
         {
             int r = Random.Range(0, miniGamesList.Count);
+            Debug.Log("TAILLE LISTE " + miniGamesList.Count);
+            Debug.Log("INDICE TIRE AU HASARD " + r);
             miniGamesList[r].enabled = true;
         }
     }

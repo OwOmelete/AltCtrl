@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace MiniGames
 {
     public class Simon : AbstractMiniGame
     {
-        [SerializeField] private SpriteRenderer[] buttons;
+        [SerializeField] private Image[] buttons;
         private KeyCode[] keyCodes = {
             KeyCode.Keypad1,
             KeyCode.Keypad2,
@@ -57,6 +58,7 @@ namespace MiniGames
             }
             int r = Random.Range(1, 10);
             Chain.Add(r);
+            StartCoroutine(sequencePlay());
             currentProgression = 0;
             for (int i = 0; i < Chain.Count; i++)
             {
@@ -71,6 +73,7 @@ namespace MiniGames
                 int i = getNumberKey();
                 if (i == Chain[currentProgression])
                 {
+                    StartCoroutine(buttonBip(i-1));
                     currentProgression += 1;
                     if (currentProgression + 1 > Chain.Count)
                     {
@@ -86,9 +89,9 @@ namespace MiniGames
 
         IEnumerator buttonBip(int i)
         {
-            buttons[i - 1].enabled = true;
+            buttons[i].enabled = true;
             yield return new WaitForSeconds(0.2f);
-            buttons[i - 1].enabled = false;
+            buttons[i].enabled = false;
         }
 
         IEnumerator sequencePlay()
@@ -96,9 +99,9 @@ namespace MiniGames
             canInput = false;
             for (int i = 0; i < Chain.Count; i++)
             {
-                buttons[i].enabled = true;
+                buttons[Chain[i]-1].enabled = true;
                 yield return new WaitForSeconds(0.4f);
-                buttons[i].enabled = false;
+                buttons[Chain[i]-1].enabled = false;
                 yield return new WaitForSeconds(0.4f);
             }
             canInput = true;

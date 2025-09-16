@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 namespace MiniGames
 {
     public class MiniSimon : AbstractMiniGame
     {
-        [SerializeField] private SpriteRenderer[] buttons;
+        [SerializeField] private Image[] buttons;
         [SerializeField] private int ChainCount;
         
         private KeyCode[] keyCodes = {
@@ -41,7 +43,6 @@ namespace MiniGames
                 if (!Chain.Contains(r))
                 {
                     Chain.Add(r);
-                    Debug.Log(r);
                 }
                 else
                 {
@@ -51,7 +52,7 @@ namespace MiniGames
 
             foreach (var i in Chain)
             {
-                buttons[i - 1].enabled = true;
+                buttons[i-1].enabled = true;
             }
         }
 
