@@ -1,13 +1,14 @@
-Shader "URP/Unlit/WindowRain"
+Shader "URP/Unlit/WindowRainFixed"
 {
     Properties
     {
-        _MainTex     ("Texture (unused tint)", 2D) = "white" {}
-        _BaseColor   ("Tint (RGBA -> A = opacity)", Color) = (1,1,1,1)
-        _Size        ("Size", Float) = 1
-        _T           ("Time", Float) = 1
-        _Distortion  ("Distortion", Range(-5, 5)) = 0
-        _Blur        ("Blur", Range(0, 1)) = 1
+        _MainTex        ("Texture (unused tint)", 2D) = "white" {}
+        _BaseColor      ("Tint (RGBA)", Color) = (1,1,1,1)
+        _Size           ("Size", Float) = 1
+        _T              ("Time", Float) = 1
+        _Distortion     ("Distortion", Range(-5, 5)) = 0
+        _Blur           ("Blur", Range(0, 1)) = 0
+        [Toggle]_ReplaceBackground ("Replace Background (no mixing)", Float) = 1
     }
 
     SubShader
@@ -20,8 +21,8 @@ Shader "URP/Unlit/WindowRain"
             "IgnoreProjector"="True"
         }
 
-        // Transparent blending + don't write to depth
-        Blend SrcAlpha OneMinusSrcAlpha
+        // Prémultiplié : pas d’halo, mélange propre
+        Blend One OneMinusSrcAlpha
         ZWrite Off
         Cull Back
 
@@ -34,7 +35,6 @@ Shader "URP/Unlit/WindowRain"
             #pragma fragment frag
             #pragma target   3.0
 
-            // URP includes
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareOpaqueTexture.hlsl"
 
@@ -44,9 +44,8 @@ Shader "URP/Unlit/WindowRain"
             float4 _MainTex_ST;
 
             float4 _BaseColor;
-            float  _Size, _T, _Distortion, _Blur;
+            float  _Size, _T, _Distortion, _Blur, _ReplaceBackground;
 
-            // Helper
             #define S(a,b,t) smoothstep(a,b,t)
 
             struct Attributes
@@ -59,20 +58,18 @@ Shader "URP/Unlit/WindowRain"
             {
                 float4 positionCS : SV_POSITION;
                 float2 uv         : TEXCOORD0;
-                float4 screenPos  : TEXCOORD1; // for sampling _CameraOpaqueTexture
+                float4 screenPos  : TEXCOORD1; // for _CameraOpaqueTexture
             };
 
             Varyings vert (Attributes v)
             {
                 Varyings o;
                 o.positionCS = TransformObjectToHClip(v.positionOS);
-                // manual TRANSFORM_TEX for URP
-                o.uv = v.uv * _MainTex_ST.xy + _MainTex_ST.zw;
-                o.screenPos = ComputeScreenPos(o.positionCS);
+                o.uv         = v.uv * _MainTex_ST.xy + _MainTex_ST.zw;
+                o.screenPos  = ComputeScreenPos(o.positionCS);
                 return o;
             }
 
-            // ------- Noise / layers (unchanged)
             float N21(float2 p)
             {
                 p = frac(p * float2(123.34, 345.45));
@@ -80,6 +77,7 @@ Shader "URP/Unlit/WindowRain"
                 return frac(p.x * p.y);
             }
 
+            // xy = offset ; z = mask
             float3 Layer(float2 UV, float t)
             {
                 float2 aspect = float2(2,1);
@@ -111,50 +109,74 @@ Shader "URP/Unlit/WindowRain"
                 fogTrail *= S(.05, .04, abs(dropPos.x));
 
                 float2 offs = drop * dropPos + trail * trailPos;
-                return float3(offs, fogTrail); // xy = offset, z = mask
+                return float3(offs, fogTrail);
             }
 
             float4 frag (Varyings i) : SV_Target
             {
-                // time
                 float t = fmod(_Time.y + _T, 7200);
 
-                // accumulate layers
+                // Accumulate rainy layers
                 float3 drops = Layer(i.uv, t);
                 drops += Layer(i.uv*1.23 + 7.54, t);
                 drops += Layer(i.uv*1.35 + 1.54, t);
                 drops += Layer(i.uv*1.57 - 7.54, t);
 
-                // edge fade and blur factor
+                // Edge fade (for distortion intensity only)
                 float fade = 1 - saturate(fwidth(i.uv) * 60);
-                float blur = _Blur * 7 * (1 - drops.z * fade);
-                blur *= -.01; // negative = outward ring blur, as in original
 
-                // screen UV from clip coords
+                // Strength of effect (drives alpha logic)
+                float effectStrength = max(abs(_Distortion), _Blur);
+                bool  active = effectStrength > 1e-5;
+
+                // Screen UV
                 float2 projUv = i.screenPos.xy / i.screenPos.w;
                 projUv += drops.xy * _Distortion * fade;
 
-                // radial multi-tap blur on the opaque texture
-                const float numSamples = 32;
-                float4 col = 0;
-                float a = N21(i.uv) * 6.2831;
-                [loop]
-                for (float k = 0; k < numSamples; k++)
+                // Sample scene color with optional blur
+                float4 col;
+
+                if (_Blur <= 1e-5f)
                 {
-                    float2 offs = float2(sin(a), cos(a)) * blur;
-                    float d = frac(sin((k + 1) * 546.) * 5424.);
-                    d = sqrt(d);
-                    offs *= d;
-
-                    // SAMPLE scene color (requires "Opaque Texture" enabled)
-                    col += SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, projUv + offs);
-                    a += 1.0;
+                    // No blur → single crisp sample (no pseudo-flou)
+                    col = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, projUv);
                 }
-                col /= numSamples;
+                else
+                {
+                    // Radial multi-tap blur
+                    float blur = _Blur * 7 * (1 - drops.z * fade);
+                    blur *= -.01;
 
-                // apply optional tint; put opacity in alpha to control transparency
-                col.rgb *= _BaseColor.rgb * 0.9;
-                col.a    = _BaseColor.a; // transparency control (0..1)
+                    const float numSamples = 32;
+                    float a = N21(i.uv) * 6.2831;
+                    col = 0;
+                    [loop]
+                    for (float k = 0; k < numSamples; k++)
+                    {
+                        float2 offs = float2(sin(a), cos(a)) * blur;
+                        float d = frac(sin((k + 1) * 546.) * 5424.);
+                        d = sqrt(d);
+                        offs *= d;
+
+                        col += SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, projUv + offs);
+                        a += 1.0;
+                    }
+                    col /= numSamples;
+                }
+
+                // Optional tint (no extra darkening)
+                col.rgb *= _BaseColor.rgb;
+
+                // Alpha policy:
+                // - If no effect → fully transparent (really invisible)
+                // - If effect active:
+                //     * _ReplaceBackground != 0 → force alpha 1 (remplace le fond -> pas de mélange flou)
+                //     * sinon → utilise _BaseColor.a (tu acceptes un mélange, donc "film" possible)
+                float alpha = active ? ((_ReplaceBackground > 0.5) ? 1.0 : saturate(_BaseColor.a)) : 0.0;
+
+                // Premultiply for clean edges
+                col.rgb *= alpha;
+                col.a    = alpha;
 
                 return col;
             }

@@ -63,6 +63,7 @@ public class ShaderStateABController : MonoBehaviour
 
     private Coroutine _transitionCo;
     private Coroutine _blurCo;
+    private Coroutine _distortionCo;
 
 
     #region Unity
@@ -112,51 +113,76 @@ public class ShaderStateABController : MonoBehaviour
     }
 
 
+    // --- remplace entièrement la méthode ---
     public void ResetBlurAndTilt(GameObject tweenTarget)
     {
+        // Stoppe la transition A<->B
         if (_transitionCo != null)
         {
             StopCoroutine(_transitionCo);
             _transitionCo = null;
         }
-        
-        if (_blurCo != null)
+
+        // Stoppe les coroutines en cours
+        if (_blurCo != null)       { StopCoroutine(_blurCo);       _blurCo = null; }
+        if (_distortionCo != null) { StopCoroutine(_distortionCo); _distortionCo = null; }
+
+        if (TryGetTargetMaterial(out var mat))
         {
-            StopCoroutine(_blurCo);
-            _blurCo = null;
+            // Lancer Blur -> 0 en 1s
+            if (mat.HasProperty(ID_Blur))
+            {
+                float startBlur = mat.GetFloat(ID_Blur);
+                _blurCo = StartCoroutine(Co_FloatToZero(mat, ID_Blur, startBlur, 1f));
+            }
+
+            // Lancer Distortion -> 0 en 1s  (NOUVEAU)
+            if (mat.HasProperty(ID_Distortion))
+            {
+                float startDist = mat.GetFloat(ID_Distortion);
+                _distortionCo = StartCoroutine(Co_FloatToZero(mat, ID_Distortion, startDist, 1f));
+            }
         }
 
-        if (TryGetTargetMaterial(out var mat) && mat.HasProperty(ID_Blur))
-        {
-            float start = mat.GetFloat(ID_Blur);
-            _blurCo = StartCoroutine(Co_BlurToZero(mat, start, 1f)); 
-        }
-
-       
+        // DOTween sur la cible (0 -> -85 -> 0 sur 2s)
         if (tweenTarget != null)
         {
             var tr = tweenTarget.transform;
             tr.DOKill(true);
-            
+
             if (resetZtoZeroBeforeTween)
             {
-                var e = tr.localEulerAngles;
-                e.z = 0f;
-                tr.localEulerAngles = e;
+                var e = tr.localEulerAngles; e.z = 0f; tr.localEulerAngles = e;
             }
-            
+
             var startEuler = tr.localEulerAngles;
             var downEuler  = new Vector3(startEuler.x, startEuler.y, 85f);
 
-            Sequence seq = DOTween.Sequence();
+            DG.Tweening.Sequence seq = DOTween.Sequence();
             seq.Append(tr.DOLocalRotate(downEuler, 1f, RotateMode.Fast).SetEase(Ease.OutQuad));
             seq.Append(tr.DOLocalRotate(startEuler, 1f, RotateMode.Fast).SetEase(Ease.InQuad));
-
         }
     }
+
     #endregion
 
+// --- nouveau helper générique : float -> 0 en 'duration' ---
+    private System.Collections.IEnumerator Co_FloatToZero(Material mat, int propId, float start, float duration)
+    {
+        if (!mat || !mat.HasProperty(propId)) yield break;
 
+        float t = 0f;
+        while (t < duration)
+        {
+            float u = t / duration;
+            mat.SetFloat(propId, Mathf.Lerp(start, 0f, u));
+            t += Time.deltaTime;
+            yield return null;
+        }
+        mat.SetFloat(propId, 0f);
+    }
+
+    
     #region Capture / Apply / Copy (ContextMenu)
     [ContextMenu("ShaderAB/Capture A From Material")]
     public void CaptureAFromMaterial()
