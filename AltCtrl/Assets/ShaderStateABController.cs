@@ -83,6 +83,14 @@ public class ShaderStateABController : MonoBehaviour
         if (initBFromAOnStart) CopyAtoB();
     }
 
+    public void wiper()
+    {
+        if (defaultTweenTargetForR != null)
+            ResetBlurAndTilt(defaultTweenTargetForR);
+        else
+            ResetBlurAndTilt(null);
+    }
+
     private void Update()
     {
 
@@ -92,10 +100,7 @@ public class ShaderStateABController : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (defaultTweenTargetForR != null)
-                ResetBlurAndTilt(defaultTweenTargetForR);
-            else
-                ResetBlurAndTilt(null);
+            wiper();
         }
     }
     #endregion

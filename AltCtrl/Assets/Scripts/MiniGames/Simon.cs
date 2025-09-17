@@ -26,6 +26,7 @@ namespace MiniGames
         private List<int> Chain = new();
         private int currentProgression = 0;
         public int MaxChainLength;
+        private bool started = false;
 
         private int getNumberKey()
         {
@@ -40,13 +41,15 @@ namespace MiniGames
         }
         protected override void MiniGameStart()
         {
-            Reset();
+            started = false;
+            StartCoroutine(SimonStart());
         }
 
         private void Reset()
         {
             Chain.Clear();
             AddNumberToList();
+            started = true;
         }
 
         private void AddNumberToList()
@@ -68,7 +71,7 @@ namespace MiniGames
 
         protected override void MiniGameUpdate()
         {
-            if (canInput)
+            if (canInput && started)
             {
                 int i = getNumberKey();
                 if (i == Chain[currentProgression])
@@ -94,9 +97,35 @@ namespace MiniGames
             buttons[i].enabled = false;
         }
 
+        IEnumerator SimonStart()
+        {
+            foreach (var button in buttons)
+            {
+                button.enabled = true;
+            }
+            yield return new WaitForSeconds(0.6f);
+            foreach (var button in buttons)
+            {
+                button.enabled = false;
+            }
+            yield return new WaitForSeconds(0.6f);
+            foreach (var button in buttons)
+            {
+                button.enabled = true;
+            }
+            yield return new WaitForSeconds(0.6f);
+            foreach (var button in buttons)
+            {
+                button.enabled = false;
+            }
+            yield return new WaitForSeconds(0.6f);
+            Reset();
+        }
+
         IEnumerator sequencePlay()
         {
             canInput = false;
+            yield return new WaitForSeconds(0.8f);
             for (int i = 0; i < Chain.Count; i++)
             {
                 buttons[Chain[i]-1].enabled = true;
