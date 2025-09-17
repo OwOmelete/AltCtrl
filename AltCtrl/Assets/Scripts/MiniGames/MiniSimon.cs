@@ -9,6 +9,7 @@ namespace MiniGames
     {
         [SerializeField] private Image[] buttons;
         [SerializeField] private int ChainCount;
+        [SerializeField] private GameObject picto;
         
         private KeyCode[] keyCodes = {
             KeyCode.Keypad1,
@@ -37,6 +38,7 @@ namespace MiniGames
         }
         protected override void MiniGameStart()
         {
+            picto.SetActive(true);
             for (int i = 0; i < ChainCount; i++)
             {
                 int r = Random.Range(1, 10);
@@ -82,6 +84,7 @@ namespace MiniGames
 
         public override void Win()
         {
+            picto.SetActive(false);
             enabled = false;
         }
     }

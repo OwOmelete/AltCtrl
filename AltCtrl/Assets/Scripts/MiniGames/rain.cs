@@ -2,16 +2,14 @@ using UnityEngine;
 
 namespace MiniGames
 {
-    public class Storm : AbstractMiniGame
+    public class rain : AbstractMiniGame
     {
-        [SerializeField] private StateABController orage;
         [SerializeField] private ShaderStateABController pluieLeft;
         [SerializeField] private ShaderStateABController pluieRight;
-        [SerializeField] private GameObject eclairs;
-        [SerializeField] private GameObject rainEffect;
         [SerializeField] private float rainDelay;
         [SerializeField] private float stormTime;
-        private float stormBeginingTime;
+        [SerializeField] private GameObject rainEffect;
+        private float rainBeginningTime;
         private bool rainOnScreen = false;
         private float? lastRain = null;
         [SerializeField] private GameObject picto;
@@ -19,14 +17,12 @@ namespace MiniGames
         {
             picto.SetActive(true);
             rainEffect.SetActive(true);
-            orage.GoAToB(orage.defaultDuration);
-            eclairs.SetActive(true);
-            stormBeginingTime = Time.time;
+            rainBeginningTime = Time.time;
         }
 
         protected override void MiniGameUpdate()
         {
-            if (Time.time - stormBeginingTime > stormTime)
+            if (Time.time - rainBeginningTime > stormTime)
             {
                 Win();
             }
@@ -48,17 +44,14 @@ namespace MiniGames
                     rainOnScreen = false;
                 }
             }
-            
         }
 
         public override void Win()
         {
             rainEffect.SetActive(false);
-            picto.SetActive(true);
+            picto.SetActive(false);
             pluieLeft.GoBToA(pluieLeft.defaultDuration);
             pluieRight.GoBToA(pluieRight.defaultDuration);
-            orage.GoBToA(orage.defaultDuration);
-            eclairs.SetActive(false);
             enabled = false;
         }
     }

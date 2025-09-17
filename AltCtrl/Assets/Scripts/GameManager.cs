@@ -30,34 +30,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase3;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase4;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
-    [SerializeField] private Image pictoSimon;
-    [SerializeField] private Image pictoOrage;
-    [SerializeField] private Image pictoLocalisation;
-    [SerializeField] private Image pictoAterissage;
-    [SerializeField] private Image pictoMiniSimon;
-    [SerializeField] private Image pictoPluie;
-    [SerializeField] private Image pictoPIJOSN;
-    [SerializeField] private Image pictoLumiere;
-    [SerializeField] private Image pictoPassagers;
     private float lastSpawn;
     private float lastMiniGame;
-    private List<Image> pictoList = new();
-
-    IEnumerator pictoCligno()
-    {
-        yield return new WaitForSeconds(1);
-        foreach (var img in pictoList)
-        {
-            img.enabled = true;
-        }
-        yield return new WaitForSeconds(1);
-        foreach (var img in pictoList)
-        {
-            img.enabled = false;
-        }
-
-        StartCoroutine(pictoCligno());
-    }
     
     private void Awake()
     {
@@ -70,7 +44,6 @@ public class GameManager : MonoBehaviour
         miniGamesList = MiniGamesPhase1.ToList();
         miniGameInterval = MiniGameIntervalPhase1;
         LaunchMiniGame();
-        StartCoroutine(pictoCligno());
     }
 
     private void Update()
@@ -154,22 +127,26 @@ public class GameManager : MonoBehaviour
     {
         if (miniGamesList.Count > 0)
         {
+            bool anyInactiveMinigame = false;
             foreach (var i in miniGamesList)
             {
-                if (i.isActiveAndEnabled)
+                if (!i.isActiveAndEnabled)
                 {
-                    break;
+                    anyInactiveMinigame = true;
                 }
-                return;
             }
-            int r = Random.Range(0, miniGamesList.Count);
-            if (miniGamesList[r].isActiveAndEnabled)
+
+            if (anyInactiveMinigame)
             {
-                LaunchMiniGame();
-            }
-            else
-            {
-                miniGamesList[r].enabled = true;
+                int r = Random.Range(0, miniGamesList.Count);
+                if (miniGamesList[r].isActiveAndEnabled)
+                {
+                    LaunchMiniGame();
+                }
+                else
+                {
+                    miniGamesList[r].enabled = true;
+                }
             }
         }
     }

@@ -13,9 +13,11 @@ public class Movement : AbstractMiniGame
     public List<GameObject> levelparent;
     [SerializeField] private GameObject miniGameObject;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject picto;
 
     protected override void MiniGameStart()
     {
+        picto.SetActive(true);
         miniGameObject.SetActive(true);
         departPos = player.transform.localPosition;
         level = 0;
@@ -38,6 +40,7 @@ public class Movement : AbstractMiniGame
 
     public override void Win()
     {
+        picto.SetActive(true);
         miniGameObject.SetActive(false);
         enabled = false;
     }

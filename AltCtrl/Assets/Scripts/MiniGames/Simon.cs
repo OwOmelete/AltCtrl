@@ -10,6 +10,7 @@ namespace MiniGames
     public class Simon : AbstractMiniGame
     {
         [SerializeField] private Image[] buttons;
+        [SerializeField] private GameObject picto;
         private KeyCode[] keyCodes = {
             KeyCode.Keypad1,
             KeyCode.Keypad2,
@@ -42,6 +43,7 @@ namespace MiniGames
         protected override void MiniGameStart()
         {
             started = false;
+            picto.SetActive(true);
             StartCoroutine(SimonStart());
         }
 
@@ -138,6 +140,7 @@ namespace MiniGames
 
         public override void Win()
         {
+            picto.SetActive(false);
             enabled = false;
         }
     }

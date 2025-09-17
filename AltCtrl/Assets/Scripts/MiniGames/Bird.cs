@@ -52,9 +52,11 @@ namespace MiniGames
         private Transform chosenRoot;
 
         private readonly List<Transform> spawnedInstances = new();
+        [SerializeField] private GameObject picto;
 
         protected override void MiniGameStart()
         {
+            picto.SetActive(true);
             chosenRoot = ChooseRoot();
             birdOnScreen = true;
             StartCoroutine(RunFlow());
@@ -284,7 +286,7 @@ namespace MiniGames
 
         public override void Win()
         {
-            Debug.Log("rawr");
+            picto.SetActive(false);
             enabled = false;
         }
     }
