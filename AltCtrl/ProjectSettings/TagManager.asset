@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Background
   - Obstacle
+  - obstacle
+  - "arriv\xE9e"
   layers:
   - Default
   - TransparentFX
