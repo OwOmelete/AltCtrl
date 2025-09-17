@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
 
         if (Time.time - lastMiniGame > miniGameInterval)
         {
-            //LaunchMiniGame();
+            LaunchMiniGame();
             lastMiniGame = Time.time;
         }
     }
@@ -154,10 +154,23 @@ public class GameManager : MonoBehaviour
     {
         if (miniGamesList.Count > 0)
         {
+            foreach (var i in miniGamesList)
+            {
+                if (i.isActiveAndEnabled)
+                {
+                    break;
+                }
+                return;
+            }
             int r = Random.Range(0, miniGamesList.Count);
-            Debug.Log("TAILLE LISTE " + miniGamesList.Count);
-            Debug.Log("INDICE TIRE AU HASARD " + r);
-            miniGamesList[r].enabled = true;
+            if (miniGamesList[r].isActiveAndEnabled)
+            {
+                LaunchMiniGame();
+            }
+            else
+            {
+                miniGamesList[r].enabled = true;
+            }
         }
     }
 }

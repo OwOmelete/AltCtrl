@@ -3961,7 +3961,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153397416}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a6803cffe2a399468716a58f0f4bc5d, type: 3}
   m_Name: 
@@ -3975,7 +3975,7 @@ MonoBehaviour:
   - {fileID: 867985609}
   firstStagePrefab: {fileID: 3660026260517607186, guid: 40191b6607ab9154eafefd79ddaf7b74, type: 3}
   birdPrefab: {fileID: 6731933793186415146, guid: 2e501e452568d0849af22850424f8086, type: 3}
-  thirdPrefabOnReplace: {fileID: 8459578731966348072, guid: 50eb579f861da2e448940dffd7839748, type: 3}
+  thirdPrefabOnReplace: {fileID: 0}
   thirdAsChildOfBird: 0
   firstTargetScale: 0.05
   firstScaleDuration: 0.3
@@ -3993,7 +3993,7 @@ MonoBehaviour:
   spawnZDegreesRandomAdd: {x: -180, y: 180}
   sweepSpeed: 1
   sweepExtraSpeedRange: {x: 0, y: 2}
-  sweepScaleXGainPerSecond: 0.1
+  sweepScaleXGainPerSecond: 0
   sweepReplacementPrefab: {fileID: 3466402124569603438, guid: 1e0250e405fa27c42befc43a6d273969, type: 3}
   sweepReplacementSpawnPoint: {fileID: 4045707650151491891}
   sweepReplacementParent: {fileID: 0}
@@ -4017,17 +4017,27 @@ MonoBehaviour:
   spawnOriginRight: {fileID: 1675374267}
   spawnInterval: 2
   driving: {fileID: 330585548}
-  MiniGameIntervalPhase1: 30
+  MiniGameIntervalPhase1: 10
   MiniGameIntervalPhase2: 20
   MiniGameIntervalPhase3: 17
   MiniGameIntervalPhase4: 15
   MiniGameIntervalPhase5: 13
   MiniGamesPhase1:
-  - {fileID: 1153397426}
+  - {fileID: 1153397420}
+  - {fileID: 1153397424}
   MiniGamesPhase2: []
   MiniGamesPhase3: []
   MiniGamesPhase4: []
   MiniGamesPhase5: []
+  pictoSimon: {fileID: 0}
+  pictoOrage: {fileID: 0}
+  pictoLocalisation: {fileID: 0}
+  pictoAterissage: {fileID: 0}
+  pictoMiniSimon: {fileID: 0}
+  pictoPluie: {fileID: 0}
+  pictoPIJOSN: {fileID: 0}
+  pictoLumiere: {fileID: 0}
+  pictoPassagers: {fileID: 0}
 --- !u!114 &1153397422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4213,7 +4223,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7598064172562084849, guid: 8cad5af8f9fdbf645897cf09fc09e978, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6942,7 +6952,7 @@ PrefabInstance:
     - target: {fileID: 2010247134547637624, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 384a2f3b0f1f38c4eb8e7a862172ba90, type: 2}
+      objectReference: {fileID: 2100000, guid: 0855836b8d929fb46b511eed6d4d444d, type: 2}
     - target: {fileID: 2556698536299097359, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -6983,6 +6993,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 7962462390117683375, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
+      propertyPath: parentTween
+      value: 
+      objectReference: {fileID: 534807149}
     - target: {fileID: 7962462390117683375, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
       propertyPath: defaultTweenTargetForR
       value: 
@@ -12475,9 +12489,13 @@ PrefabInstance:
       value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7962462390117683375, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
+      propertyPath: parentTween
+      value: 
+      objectReference: {fileID: 1702986602}
+    - target: {fileID: 7962462390117683375, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
       propertyPath: defaultTweenTargetForR
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 3466402124569603438, guid: 1e0250e405fa27c42befc43a6d273969, type: 3}
     - target: {fileID: 8057956714779319336, guid: e342eeaf534f4a046b51222a2e817123, type: 3}
       propertyPath: m_Name
       value: Window

@@ -284,6 +284,7 @@ namespace MiniGames
 
         public override void Win()
         {
+            Debug.Log("rawr");
             enabled = false;
         }
     }
