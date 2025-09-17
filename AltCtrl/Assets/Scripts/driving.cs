@@ -8,7 +8,9 @@ using Random = UnityEngine.Random;
 public class driving : MonoBehaviour
 {
     public float displacement;
-    
+    public float MovementSpeed;
+
+
     private bool grounded = false;
     [SerializeField] private int pv = 3;
     private Collider lastObstacle;
@@ -61,7 +63,7 @@ public class driving : MonoBehaviour
             {
                 pos += centerPosition.position + new Vector3(Input.GetAxisRaw("Horizontal") * displacement, Input.GetAxisRaw("Vertical") * displacement, 0);
             }
-            transform.position = pos;
+            transform.position = Vector3.Lerp(transform.position,pos,MovementSpeed);
         }
         
     }
