@@ -5,20 +5,55 @@ namespace MiniGames
     public class Storm : AbstractMiniGame
     {
         [SerializeField] private StateABController orage;
-        [SerializeField] private ShaderStateABController pluie;
+        [SerializeField] private ShaderStateABController pluieLeft;
+        [SerializeField] private ShaderStateABController pluieRight;
+        [SerializeField] private GameObject eclairs;
+        [SerializeField] private float rainDelay;
+        [SerializeField] private float stormTime;
+        private float stormBeginingTime;
+        private bool rainOnScreen = false;
+        private float? lastRain = null;
         protected override void MiniGameStart()
         {
-            
+            orage.GoAToB(orage.defaultDuration);
+            eclairs.SetActive(true);
+            stormBeginingTime = Time.time;
         }
 
         protected override void MiniGameUpdate()
         {
+            if (Time.time - stormBeginingTime > stormTime)
+            {
+                Win();
+            }
+
+            if ((Time.time - lastRain > rainDelay || lastRain == null) && !rainOnScreen)
+            {
+                rainOnScreen = true;
+                pluieLeft.GoAToB(50);
+                pluieRight.GoAToB(50);
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                pluieLeft.wiper();
+                pluieRight.wiper();
+                if (rainOnScreen)
+                {
+                    lastRain = Time.time;
+                    rainOnScreen = false;
+                }
+            }
             
         }
 
         public override void Win()
         {
-            
+            pluieLeft.GoBToA(pluieLeft.defaultDuration);
+            pluieRight.GoBToA(pluieRight.defaultDuration);
+            orage.GoBToA(orage.defaultDuration);
+            eclairs.SetActive(false);
+            enabled = false;
         }
     }
 }

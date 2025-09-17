@@ -4,22 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Movement : MonoBehaviour
+public class Movement : AbstractMiniGame
 {
     private Vector3 startPos, endPos, departPos;
     public bool isMoving = false;
     public float MoveTime;
     private int level;
     public List<GameObject> levelparent;
+    [SerializeField] private GameObject miniGameObject;
+    [SerializeField] private GameObject player;
 
-    private void Start()
+    protected override void MiniGameStart()
     {
-        departPos = transform.localPosition;
+        miniGameObject.SetActive(true);
+        departPos = player.transform.localPosition;
         level = 0;
         levelparent[level].SetActive(true);
     }
 
-    void Update()
+    protected override void MiniGameUpdate()
     {
         float x = 0;
         float y = 0;
@@ -33,14 +36,20 @@ public class Movement : MonoBehaviour
         if (!isMoving && (x != 0 || y != 0)) StartCoroutine(MovePlayer(new Vector3(x, y, 0f)));
     }
 
+    public override void Win()
+    {
+        miniGameObject.SetActive(false);
+        enabled = false;
+    }
+
     IEnumerator MovePlayer(Vector3 dir)
     {
         isMoving = true;
         float nextMove = 0f;
-        startPos = transform.localPosition;
+        startPos = player.transform.localPosition;
         endPos = startPos + dir;
-        Vector3 endPosWorld = transform.parent.TransformPoint(endPos);
-        Vector3 startPosWorld = transform.parent.TransformPoint(startPos);
+        Vector3 endPosWorld = player.transform.parent.TransformPoint(endPos);
+        Vector3 startPosWorld = player.transform.parent.TransformPoint(startPos);
         Vector3 cameraPos = Camera.main.WorldToScreenPoint(endPosWorld);
         Ray ray = Camera.main.ScreenPointToRay(cameraPos);
         Debug.DrawRay(Camera.main.transform.position, endPosWorld,Color.red,0.5f);
@@ -54,7 +63,7 @@ public class Movement : MonoBehaviour
                 isMoving = false;
                 yield break;
             }
-            else if (R.collider.tag == "arrivée")
+            else if (R.collider.tag == "arrivee")
             {
                 Debug.Log("vous avez atteint la fin du niveau");
                 gg = true;
@@ -66,7 +75,7 @@ public class Movement : MonoBehaviour
                 }
                 else if (level <= 2)
                 {
-                    Debug.Log("vous avez gagné");
+                    Win();
                 }
             }
             
@@ -74,18 +83,18 @@ public class Movement : MonoBehaviour
     
         while(nextMove < MoveTime)
         {
-            transform.localPosition = Vector3.Lerp(startPos, endPos, nextMove / MoveTime);
+            player.transform.localPosition = Vector3.Lerp(startPos, endPos, nextMove / MoveTime);
             nextMove += Time.deltaTime;
             yield return null;
         }
 
-        transform.localPosition = endPos;
+        player.transform.localPosition = endPos;
 
         isMoving = false;
 
         if(gg)
         {
-            transform.localPosition = departPos;
+            player.transform.localPosition = departPos;
         }
     }
 
