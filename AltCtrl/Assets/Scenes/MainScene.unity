@@ -1436,6 +1436,10 @@ MonoBehaviour:
   landingDisplacement: 25
   landingDuration: 10
   centerPosition: {fileID: 145739872}
+  lifeDisplay:
+  - {fileID: 1893321288}
+  - {fileID: 1384006945}
+  - {fileID: 1665166110}
 --- !u!65 &330585549
 BoxCollider:
   m_ObjectHideFlags: 0

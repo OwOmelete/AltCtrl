@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
@@ -29,9 +30,35 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase3;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase4;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
+    [SerializeField] private Image pictoSimon;
+    [SerializeField] private Image pictoOrage;
+    [SerializeField] private Image pictoLocalisation;
+    [SerializeField] private Image pictoAterissage;
+    [SerializeField] private Image pictoMiniSimon;
+    [SerializeField] private Image pictoPluie;
+    [SerializeField] private Image pictoPIJOSN;
+    [SerializeField] private Image pictoLumiere;
+    [SerializeField] private Image pictoPassagers;
     private float lastSpawn;
     private float lastMiniGame;
+    private List<Image> pictoList = new();
 
+    IEnumerator pictoCligno()
+    {
+        yield return new WaitForSeconds(1);
+        foreach (var img in pictoList)
+        {
+            img.enabled = true;
+        }
+        yield return new WaitForSeconds(1);
+        foreach (var img in pictoList)
+        {
+            img.enabled = false;
+        }
+
+        StartCoroutine(pictoCligno());
+    }
+    
     private void Awake()
     {
         INSTANCE = this;
@@ -39,9 +66,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        spawnInterval = 8;
         miniGamesList = MiniGamesPhase1.ToList();
         miniGameInterval = MiniGameIntervalPhase1;
         LaunchMiniGame();
+        StartCoroutine(pictoCligno());
     }
 
     private void Update()

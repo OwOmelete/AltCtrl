@@ -30,8 +30,8 @@ namespace MiniGames
             if ((Time.time - lastRain > rainDelay || lastRain == null) && !rainOnScreen)
             {
                 rainOnScreen = true;
-                pluieLeft.GoAToB(50);
-                pluieRight.GoAToB(50);
+                pluieLeft.GoAToB(10);
+                pluieRight.GoAToB(10);
             }
 
             if (Input.GetKeyDown(KeyCode.R))

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class driving : MonoBehaviour
@@ -16,6 +17,16 @@ public class driving : MonoBehaviour
     [SerializeField] private int landingDisplacement;
     [SerializeField] private int landingDuration;
     [SerializeField] private Transform centerPosition;
+    [SerializeField] private Image[] lifeDisplay;
+
+
+    private void Start()
+    {
+        foreach (var img in lifeDisplay)
+        {
+            img.enabled = false;
+        }
+    }
 
     private void Update()
     {
@@ -63,6 +74,7 @@ public class driving : MonoBehaviour
             pv -= 1;
             Debug.Log("pv : " + pv);
             lastObstacle = other;
+            lifeDisplay[2 - pv].enabled = true;
         }
     }
 
