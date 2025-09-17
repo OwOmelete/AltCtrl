@@ -23,6 +23,7 @@ namespace MiniGames
                 else
                 {
                     Debug.Log("les plumes sont parties aussi :D");
+                    Win();
                 }
             }
         }
