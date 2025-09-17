@@ -26,6 +26,7 @@ public class ShaderStateABController : MonoBehaviour
     [Header("Debug R")]
     [Tooltip("Cible utilisée quand on appuie la touche R (peut rester vide si vous appelez la méthode ResetBlurAndTilt(go) vous-même).")]
     public GameObject defaultTweenTargetForR;
+    public Transform parentTween;
     [Tooltip("Remet le Z local à 0 avant la rotation R.")]
     public bool resetZtoZeroBeforeTween = true;
 
@@ -152,20 +153,12 @@ public class ShaderStateABController : MonoBehaviour
         // DOTween sur la cible (0 -> -85 -> 0 sur 2s)
         if (tweenTarget != null)
         {
-            var tr = tweenTarget.transform;
-            tr.DOKill(true);
+            if (!tweenTarget) return;
 
-            if (resetZtoZeroBeforeTween)
-            {
-                var e = tr.localEulerAngles; e.z = 0f; tr.localEulerAngles = e;
-            }
+            Transform parent = parentTween;
 
-            var startEuler = tr.localEulerAngles;
-            var downEuler  = new Vector3(startEuler.x, startEuler.y, 85f);
-
-            DG.Tweening.Sequence seq = DOTween.Sequence();
-            seq.Append(tr.DOLocalRotate(downEuler, 1f, RotateMode.Fast).SetEase(Ease.OutQuad));
-            seq.Append(tr.DOLocalRotate(startEuler, 1f, RotateMode.Fast).SetEase(Ease.InQuad));
+            Vector3 pos = parentTween.position; 
+            Instantiate(tweenTarget, pos, Quaternion.identity, parent);
         }
     }
 
