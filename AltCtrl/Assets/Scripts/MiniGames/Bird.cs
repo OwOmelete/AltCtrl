@@ -8,20 +8,14 @@ namespace MiniGames
     public class Bird : AbstractMiniGame
     {
         [Header("Parents / Positionnement")]
-        [Tooltip("Root par défaut si la liste est vide")]
         public Transform defaultSpawnRoot;
-        [Tooltip("Liste de points de spawn possibles (un sera choisi au hasard au démarrage)")]
         public List<Transform> spawnRoots = new();
 
         [Header("Prefabs (Etape 1, 2, et 3)")]
-        [Tooltip("Prefab qui apparaît d'abord (ex: impact/trace)")]
-        public GameObject firstStagePrefab;
-        [Tooltip("Prefab 'pigeon' qui remplace le premier une fois la taille atteinte")]
-        public GameObject birdPrefab;
 
-        [Tooltip("**NOUVEAU** : Prefab additionnel à spawner EXACTEMENT au moment où le 2e remplace le 1er")]
+        public GameObject firstStagePrefab;
+        public GameObject birdPrefab;
         public GameObject thirdPrefabOnReplace;
-        [Tooltip("Si vrai, le 3e prefab devient enfant du 2e (pigeon). Sinon, il partage le même parent.")]
         public bool thirdAsChildOfBird = false;
 
         [Header("Etape 1 - Apparition progressive")]
@@ -44,17 +38,11 @@ namespace MiniGames
         public Vector2 spawnZDegreesRandomAdd = new(-180f, 180f);
 
         [Header("Balayage / Remplacement")]
-        [Tooltip("Vitesse (unités monde/sec) du balayage vers la droite")]
         public float sweepSpeed = 6f;
-        [Tooltip("Variation aléatoire ajoutée à sweepSpeed POUR LES SPAWNS (plumes/débris)")]
         public Vector2 sweepExtraSpeedRange = new(0f, 3f);
-        [Tooltip("Gain de scale X par seconde pendant le balayage")]
         public float sweepScaleXGainPerSecond = 0.1f;
-        [Tooltip("Prefab spawné pendant les balayages (if & else)")]
         public GameObject sweepReplacementPrefab;
-        [Tooltip("Point de spawn du prefab de remplacement")]
         public Transform sweepReplacementSpawnPoint;
-        [Tooltip("Parent optionnel pour le prefab de remplacement (fallback: root choisi)")]
         public Transform sweepReplacementParent;
 
         private bool birdOnScreen = false;
@@ -68,7 +56,6 @@ namespace MiniGames
         protected override void MiniGameStart()
         {
             chosenRoot = ChooseRoot();
-            Debug.Log($"[Bird] Root choisi: {(chosenRoot ? chosenRoot.name : "null (fallback self)")}");
             birdOnScreen = true;
             StartCoroutine(RunFlow());
         }
@@ -93,11 +80,10 @@ namespace MiniGames
 
             if (!firstStagePrefab || !birdPrefab)
             {
-                Debug.LogError("[Bird] Assigne les deux prefabs (firstStagePrefab et birdPrefab).");
                 yield break;
             }
 
-            // === Étape 1 : apparition progressive ===
+         
             var go1 = Instantiate(firstStagePrefab, parent.position, parent.rotation, parent);
             firstInst = go1.transform;
             firstInst.localScale = Vector3.zero;
@@ -105,7 +91,6 @@ namespace MiniGames
                                   .SetEase(firstScaleEase)
                                   .WaitForCompletion();
 
-            // === Remplacement par le pigeon (2e prefab) ===
             Vector3 pos = firstInst.position;
             Quaternion rot = firstInst.rotation;
             Transform par = firstInst.parent;
@@ -115,17 +100,16 @@ namespace MiniGames
             var go2 = Instantiate(birdPrefab, pos, rot, par);
             birdInst = go2.transform;
 
-            // === NOUVEAU : spawner le 3e prefab au même Transform que le 2e ===
+
             if (thirdPrefabOnReplace)
             {
                 Transform thirdParent = thirdAsChildOfBird ? birdInst : par;
                 var go3 = Instantiate(thirdPrefabOnReplace, pos, rot, thirdParent);
 
-                // Optionnel : si on veut la même scale locale visible
                 go3.transform.localScale = birdInst.localScale;
             }
 
-            // === Étape 2 : squishy + spawns pendant le squish ===
+          
             running = DOTween.Sequence();
             Vector3 baseScale = birdInst.localScale;
             float a = Mathf.Clamp01(squishAmount);
@@ -154,12 +138,12 @@ namespace MiniGames
 
             var go = Instantiate(prefab, start, Quaternion.identity, parent);
 
-            // Destination aléatoire
+
             Vector2 xr = randomX; if (xr.x > xr.y) (xr.x, xr.y) = (xr.y, xr.x);
             Vector2 yr = randomY; if (yr.x > yr.y) (yr.x, yr.y) = (yr.y, yr.x);
             Vector3 target = start + new Vector3(Random.Range(xr.x, xr.y), Random.Range(yr.x, yr.y), 0f);
 
-            // Variation aléatoire ajoutée au spin total
+
             float zMin = Mathf.Min(spawnZDegreesRandomAdd.x, spawnZDegreesRandomAdd.y);
             float zMax = Mathf.Max(spawnZDegreesRandomAdd.x, spawnZDegreesRandomAdd.y);
             float extraZ = Random.Range(zMin, zMax);
@@ -174,8 +158,7 @@ namespace MiniGames
                 moveEase: spawnTravelEase,
                 totalZDegrees: spawnTotalZDegrees + extraZ
             );
-
-            // Mémoriser pour le balayage ultérieur
+            
             spawnedInstances.Add(go.transform);
         }
 
@@ -184,11 +167,17 @@ namespace MiniGames
             running?.Kill();
             running = null;
 
-            if (firstInst) { firstInst.DOKill(); Destroy(firstInst.gameObject); firstInst = null; }
-            if (birdInst)  { birdInst.DOKill();  Destroy(birdInst.gameObject);  birdInst  = null; }
+            if (firstInst)
+            {
+                firstInst.DOKill(); Destroy(firstInst.gameObject); firstInst = null;
+            }
+
+            if (birdInst)
+            {
+                birdInst.DOKill();  Destroy(birdInst.gameObject);  birdInst  = null;
+            }
         }
 
-        // ==== Balayages + spawn simultané ====
 
         private void StartSweepBirdAndSpawnReplacement()
         {
@@ -275,8 +264,6 @@ namespace MiniGames
 
         protected override void MiniGameUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.R))
-                StartCoroutine(RunFlow());
 
             if (Input.GetKeyDown(KeyCode.F))
             {
@@ -300,8 +287,7 @@ namespace MiniGames
             enabled = false;
         }
     }
-
-    /// <summary>Déplacement + rotation pendant le trajet, puis stop. Aucun auto-destroy.</summary>
+    
     public class MiniSpawnMover : MonoBehaviour
     {
         private Tween moveT, rotT;
