@@ -50,8 +50,12 @@ namespace MiniGames
         {
             rainEffect.SetActive(false);
             picto.SetActive(false);
-            pluieLeft.GoBToA(pluieLeft.defaultDuration);
-            pluieRight.GoBToA(pluieRight.defaultDuration);
+            if (rainOnScreen)
+            {
+                pluieLeft.GoBToA(pluieLeft.defaultDuration);
+                pluieRight.GoBToA(pluieRight.defaultDuration);
+                rainOnScreen = false;
+            }
             enabled = false;
         }
     }
