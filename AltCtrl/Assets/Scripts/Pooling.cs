@@ -12,13 +12,21 @@ public class Pooling : MonoBehaviour
     public List<GameObject> pool = new();
     [SerializeField] private float spawnInterval = 1;
     private float lastSpawn;
+    private bool canSpawn = true;
 
     private void Update()
     {
-        if (Time.time - lastSpawn > spawnInterval)
+        if (Time.time - GameManager.INSTANCE.startTime > GameManager.INSTANCE.timeBeforeLanding)
         {
-            SpawnObject();
-            lastSpawn = Time.time;
+            canSpawn = false;
+        }
+        if (canSpawn)
+        {
+            if (Time.time - lastSpawn > spawnInterval)
+            {
+                SpawnObject();
+                lastSpawn = Time.time;
+            }
         }
     }
 

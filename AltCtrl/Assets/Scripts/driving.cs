@@ -12,9 +12,10 @@ public class driving : MonoBehaviour
     [SerializeField] private int pv = 3;
     private Collider lastObstacle;
     private bool isLanding = false;
-    [SerializeField] private int landingSpeed;
-    [SerializeField] private int landingDisplacement;
-    [SerializeField] private int landingDuration;
+    [SerializeField] private float landingSpeed;
+    [SerializeField] private float landingDisplacement;
+    [SerializeField] private float landingDuration;
+    [SerializeField] private float MovementSpeed;
     [SerializeField] private Transform centerPosition;
     [SerializeField] private Image[] lifeDisplay;
 
@@ -49,7 +50,6 @@ public class driving : MonoBehaviour
             isLanding = true;
             centerPosition.DOMoveY(centerPosition.position.y - landingDisplacement, landingDuration)
                 .SetEase(Ease.InOutQuad).OnComplete(landed);
-            //StartCoroutine(landing());
         }
         if (isLanding)
         {
@@ -59,6 +59,7 @@ public class driving : MonoBehaviour
 
     private void landed()
     {
+        GameManager.INSTANCE.landed = true;
         isLanding = false;
     }
 
@@ -75,7 +76,7 @@ public class driving : MonoBehaviour
             {
                 pos += centerPosition.position + new Vector3(Input.GetAxisRaw("Horizontal") * displacement, Input.GetAxisRaw("Vertical") * displacement, 0);
             }
-            transform.position = pos;
+            transform.position = Vector3.Lerp(transform.position, pos, MovementSpeed);
         }
     }
 

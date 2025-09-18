@@ -15,9 +15,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject obstacle;
     [SerializeField] private GameObject MountainLeft;
     [SerializeField] private GameObject MountainRight;
+    [SerializeField] private GameObject MountainDown;
+    [SerializeField] private GameObject vach;
+    [SerializeField] private GameObject foin;
     [SerializeField] private Transform spawnOrigin;
     [SerializeField] private Transform spawnOriginLeft;
     [SerializeField] private Transform spawnOriginRight;
+    [SerializeField] private Transform spawnOriginDown;
+    [SerializeField] private Transform spawnOriginLanding;
     [SerializeField] private float spawnInterval;
     [SerializeField] private driving driving;
     [SerializeField] private int MiniGameIntervalPhase1;
@@ -32,6 +37,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
     private float lastSpawn;
     private float lastMiniGame;
+    [HideInInspector] public float startTime;
+    [HideInInspector] public bool landed;
+    public float timeBeforeObstacleSpawningStop = 300;
+    public float timeBeforeLanding = 310;
+    private bool canSpawnObstacle = true;
     
     private void Awake()
     {
@@ -40,6 +50,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        startTime = Time.time;
         spawnInterval = 8;
         miniGamesList = MiniGamesPhase1.ToList();
         miniGameInterval = MiniGameIntervalPhase1;
@@ -48,12 +59,20 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time - lastSpawn > spawnInterval)
+        if (Time.time - startTime > timeBeforeObstacleSpawningStop)
         {
-            SpawnObstacle();
-            lastSpawn = Time.time;
+            canSpawnObstacle = false;
         }
 
+        if (canSpawnObstacle)
+        {
+            if (Time.time - lastSpawn > spawnInterval)
+            {
+                SpawnObstacle();
+                lastSpawn = Time.time;
+            }
+        }
+        
         if (Time.time - lastMiniGame > miniGameInterval)
         {
             LaunchMiniGame();
