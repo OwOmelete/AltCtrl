@@ -37,6 +37,10 @@ public class GalleryModeManager : MonoBehaviour
                 AfkTimer(0);
             }
         }
+        if (Gaming && Input.anyKeyDown)
+        {
+            AfkTimer(TimeToAFK);
+        }
     }
 
     public void AfkTimer(float time)
