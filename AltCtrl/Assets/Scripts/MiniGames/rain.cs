@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MiniGames
@@ -13,10 +14,12 @@ namespace MiniGames
         private bool rainOnScreen = false;
         private float? lastRain = null;
         [SerializeField] private GameObject picto;
+        List<string> clips = new List<string> { "Sound_rain_ambiance" };
         protected override void MiniGameStart()
         {
             picto.SetActive(true);
             rainEffect.SetActive(true);
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
             rainBeginningTime = Time.time;
         }
 

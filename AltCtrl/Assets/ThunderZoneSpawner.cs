@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [AddComponentMenu("FX/Thunder Zone Spawner")]
 [RequireComponent(typeof(MeshFilter))]
@@ -31,6 +32,8 @@ public class ThunderZoneSpawner : MonoBehaviour
     [Tooltip("Lancer automatiquement le spawn au OnEnable()")]
     public bool spawnOnEnable = true;
 
+    List<string> clips = new List<string> { "Sounf_thunder" };
+    
     private MeshFilter _meshFilter;
     private Coroutine _loop;
 
@@ -82,6 +85,8 @@ public class ThunderZoneSpawner : MonoBehaviour
         Vector3 localPoint = new Vector3(lx, ly, lz);
         Vector3 worldPoint = transform.TransformPoint(localPoint);
 
+        SoundManager.Instance.PlayRandomSFX(clips, 0.9f, 1.1f);
+        
         Quaternion rot = thunderPrefab.transform.rotation;
         Transform parent = instancesParent != null ? instancesParent : null;
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MiniGames
@@ -15,6 +16,9 @@ namespace MiniGames
         private bool rainOnScreen = false;
         private float? lastRain = null;
         [SerializeField] private GameObject picto;
+        List<string> clips = new List<string> { "VoiceLine Début de l'orage" };
+        List<string> clips2 = new List<string> { "Sound_thunder_and_rain" };
+
         protected override void MiniGameStart()
         {
             picto.SetActive(true);
@@ -22,6 +26,8 @@ namespace MiniGames
             orage.GoAToB(orage.defaultDuration);
             eclairs.SetActive(true);
             stormBeginingTime = Time.time;
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
+            SoundManager.Instance.PlayRandomSFX(clips2, 1f, 1f);
         }
 
         protected override void MiniGameUpdate()

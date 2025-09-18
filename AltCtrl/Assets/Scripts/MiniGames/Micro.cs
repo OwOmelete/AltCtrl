@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,9 @@ namespace MiniGames
 
         public Slider Slider;
 
+        List<string> clips = new List<string> { "Sound_bouton_annonce_micro" };
+        List<string> clips2 = new List<string> { "Sound_passagers" };
+        
         private AudioClip micClip;
         [SerializeField] private GameObject picto;
         protected override void MiniGameStart()
@@ -25,6 +29,7 @@ namespace MiniGames
             maxVolume = 0;
             micOpened = false;
             picto.SetActive(true);
+            SoundManager.Instance.PlayRandomSFX(clips2, 1f, 1f);
             if (Microphone.devices.Length > 0)
             {
                 selectedDevice = Microphone.devices[0];
@@ -67,6 +72,7 @@ namespace MiniGames
             if (Input.GetKeyDown(KeyCode.Y) && !micOpened)
             {
                 micOpened = true;
+                SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
                 openMicStart = Time.time;
             }
 
