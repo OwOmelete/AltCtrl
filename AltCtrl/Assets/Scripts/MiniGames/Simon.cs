@@ -9,6 +9,10 @@ namespace MiniGames
 {
     public class Simon : AbstractMiniGame
     {
+        List<string> clips = new List<string> { "VoiceLine Simon" };
+        List<string> clips2 = new List<string> { "SFX Simon" };
+        List<string> clips3 = new List<string> { "SFX Simon complete 7 notes" };
+        
         [SerializeField] private Image[] buttons;
         [SerializeField] private GameObject picto;
         private KeyCode[] keyCodes = {
@@ -44,6 +48,8 @@ namespace MiniGames
         {
             started = false;
             picto.SetActive(true);
+            
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
             StartCoroutine(SimonStart());
         }
 
@@ -95,6 +101,7 @@ namespace MiniGames
         IEnumerator buttonBip(int i)
         {
             buttons[i].enabled = true;
+            SoundManager.Instance.PlayRandomSFX(clips2, 0.9f, 1.1f);
             yield return new WaitForSeconds(0.2f);
             buttons[i].enabled = false;
         }
@@ -141,6 +148,7 @@ namespace MiniGames
         public override void Win()
         {
             picto.SetActive(false);
+            SoundManager.Instance.PlayRandomSFX(clips3, 1f, 1f);
             enabled = false;
         }
     }

@@ -11,6 +11,8 @@ namespace MiniGames
         [SerializeField] private int ChainCount;
         [SerializeField] private GameObject picto;
         
+        List<string> clips = new List<string> { "SFX Simon" };
+        
         private KeyCode[] keyCodes = {
             KeyCode.Keypad1,
             KeyCode.Keypad2,
@@ -79,6 +81,7 @@ namespace MiniGames
         private void buttonPressed(int number)
         {
             Chain.Remove(number);
+            SoundManager.Instance.PlayRandomSFX(clips, 0.9f, 1.1f);
             buttons[number - 1].enabled = false;
         }
 

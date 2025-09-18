@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
     private float lastSpawn;
     private float lastMiniGame;
+    List<string> clips = new List<string> { "SFX Lancement de la machine bip boup" };
+
     
     private void Awake()
     {
@@ -44,6 +46,7 @@ public class GameManager : MonoBehaviour
         miniGamesList = MiniGamesPhase1.ToList();
         miniGameInterval = MiniGameIntervalPhase1;
         LaunchMiniGame();
+        SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
     }
 
     private void Update()

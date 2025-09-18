@@ -1447,6 +1447,11 @@ MonoBehaviour:
   - {fileID: 1893321288}
   - {fileID: 1384006945}
   - {fileID: 1665166110}
+  spawnPrefab: {fileID: 0}
+  spawnPoint: {fileID: 0}
+  targetCamera: {fileID: 0}
+  shakeIntensity: 0.6
+  shakeDuration: 0.25
 --- !u!65 &330585549
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7281,8 +7286,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 1642230623}
   sfxSource: {fileID: 225015236}
-  musicClips: []
-  sfxClips: []
+  musicClips:
+  - {fileID: 8300000, guid: cc7521fc4aa720b4baea64ac11d99443, type: 3}
+  sfxClips:
+  - {fileID: 8300000, guid: b4336376922dc784bbd5864cb611916b, type: 3}
+  - {fileID: 8300000, guid: a1c086ca6b11c1a40b5021b061e8e262, type: 3}
+  - {fileID: 8300000, guid: 80eed3ba52f687d4594b813d731bd67d, type: 3}
+  - {fileID: 8300000, guid: 914e09e0d441d8d4ab07ab48eae64d86, type: 3}
+  - {fileID: 8300000, guid: b724ad58313c9c941b86d988c9991183, type: 3}
+  - {fileID: 8300000, guid: f441e4335fbc15041a5c9fe7589ef17a, type: 3}
+  - {fileID: 8300000, guid: cc7521fc4aa720b4baea64ac11d99443, type: 3}
+  - {fileID: 8300000, guid: a27c06ac73e1b7b45b109d8c17ddde0e, type: 3}
+  - {fileID: 8300000, guid: 99b378baaac027b45be76d458259c905, type: 3}
+  - {fileID: 8300000, guid: 20e0080a0d480c0499c0c1a36ab0a254, type: 3}
+  - {fileID: 8300000, guid: 684f5bca530000b4f9f47e8a436aaff5, type: 3}
+  - {fileID: 8300000, guid: fdb2bee521db56e4e8dd1ef28782db31, type: 3}
+  - {fileID: 8300000, guid: ee10f53c0941d4440ac36fd17830e1f0, type: 3}
+  - {fileID: 8300000, guid: 4adc0704e68f1e74d803e987a58fed79, type: 3}
+  - {fileID: 8300000, guid: b8609cf095bccf744b1a3ac5c20b0a99, type: 3}
+  - {fileID: 8300000, guid: 0f38745312330984ca6710697be54101, type: 3}
+  - {fileID: 8300000, guid: 85a68f45fe09e8444a76b2d6bdb5bbfb, type: 3}
+  - {fileID: 8300000, guid: 00c4acd8664620f4ba2ec420e4d9b9ca, type: 3}
+  - {fileID: 8300000, guid: ac558e6642fcbc24980e000765464d6f, type: 3}
+  - {fileID: 8300000, guid: 9d621dbf10c4d6a43bc2408f65bb7c63, type: 3}
   musicSlider: {fileID: 0}
   sfxSlider: {fileID: 0}
   musicVolume: 1

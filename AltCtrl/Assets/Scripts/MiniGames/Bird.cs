@@ -53,6 +53,7 @@ namespace MiniGames
 
         private readonly List<Transform> spawnedInstances = new();
         [SerializeField] private GameObject picto;
+        List<string> clips = new List<string> { "SFX Pigeon Ecrasé" };
 
         protected override void MiniGameStart()
         {
@@ -116,6 +117,8 @@ namespace MiniGames
             Vector3 baseScale = birdInst.localScale;
             float a = Mathf.Clamp01(squishAmount);
 
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
+            
             running.Append(birdInst.DOScale(new Vector3(baseScale.x * (1f + a), baseScale.y * (1f - a), baseScale.z),
                                             squishDuration * 0.5f).SetEase(Ease.OutQuad));
             running.Append(birdInst.DOScale(baseScale, squishDuration * 0.5f).SetEase(Ease.OutBack));

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
@@ -25,6 +26,9 @@ public class driving : MonoBehaviour
     [SerializeField] private float shakeIntensity = 0.6f;
     [SerializeField] private float shakeDuration = 0.25f;
 
+    List<string> clips = new List<string> { "Sound_damage" };
+    List<string> clips2 = new List<string> { "VoiceLine Contact Imminent 3 2 1" };
+    
     // Interne
     private Tween _camShakeTween;
 
@@ -91,6 +95,7 @@ public class driving : MonoBehaviour
             int idx = Mathf.Clamp(2 - pv, 0, lifeDisplay.Length - 1);
             if (lifeDisplay != null && lifeDisplay.Length > 0 && lifeDisplay[idx] != null)
                 lifeDisplay[idx].enabled = true;
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
         }
         
         DoCollisionFeedback(other);
