@@ -64,13 +64,14 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        
         if (Time.time - startTime > timeBeforeObstacleSpawningStop && !landed)
         {
             canSpawnObstacle = false; 
             picto.SetActive(true);
         }
-
-        if (canSpawnObstacle && Time.time - startTime > timeBeforeBrake)
+        
+        if (canSpawnObstacle && Time.time - startTime < timeBeforeBrake)
         {
             if (Time.time - lastSpawn > spawnInterval)
             {
