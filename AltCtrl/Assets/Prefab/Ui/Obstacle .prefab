@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5194706114521494079}
   - component: {fileID: 8969753701052257370}
-  - component: {fileID: 2209405553792498854}
+  - component: {fileID: 8873547288400066308}
   m_Layer: 5
   m_Name: 'Obstacle '
   m_TagString: obstacle
@@ -28,8 +28,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.33, y: 1.45, z: -1.7053678}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 43, y: 43, z: 43}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -88,7 +88,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!65 &2209405553792498854
+--- !u!65 &8873547288400066308
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,5 +107,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.026571432, y: 0.026571432, z: 0.018552968}
+  m_Center: {x: 0, y: 0, z: -0.0014318892}

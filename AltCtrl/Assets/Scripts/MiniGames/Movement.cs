@@ -10,6 +10,7 @@ public class Movement : AbstractMiniGame
     public bool isMoving = false;
     public float MoveTime;
     private int level;
+    public float mult;
     public List<GameObject> levelparent;
     [SerializeField] private GameObject miniGameObject;
     [SerializeField] private GameObject player;
@@ -50,7 +51,7 @@ public class Movement : AbstractMiniGame
         isMoving = true;
         float nextMove = 0f;
         startPos = player.transform.localPosition;
-        endPos = startPos + dir;
+        endPos = startPos + dir * mult;
         Vector3 endPosWorld = player.transform.parent.TransformPoint(endPos);
         Vector3 startPosWorld = player.transform.parent.TransformPoint(startPos);
         Vector3 cameraPos = Camera.main.WorldToScreenPoint(endPosWorld);
