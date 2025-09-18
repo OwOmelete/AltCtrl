@@ -38,6 +38,8 @@ public class ShaderStateABController : MonoBehaviour
     private static readonly int ID_Distortion = Shader.PropertyToID("_Distortion");
     private static readonly int ID_Blur       = Shader.PropertyToID("_Blur");
 
+    public Transform parent;
+    
     [Serializable]
     public class Snapshot
     {
@@ -158,8 +160,10 @@ public class ShaderStateABController : MonoBehaviour
             Transform parent = parentTween;
 
             Vector3 pos = parentTween.position; 
-            Instantiate(tweenTarget, pos, Quaternion.identity, parent);
-        }
+            GameObject instance = Instantiate(tweenTarget, this.parent);
+            instance.transform.position += new Vector3(0,0,8.31f) ;
+            
+        }   
     }
 
     #endregion

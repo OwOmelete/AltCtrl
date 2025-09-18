@@ -9,6 +9,7 @@ TagManager:
   - obstacle
   - arrivee
   - "arriv\xE9e"
+  - instantDeath
   layers:
   - Default
   - TransparentFX
