@@ -60,18 +60,19 @@ namespace MiniGames
         protected override void MiniGameUpdate()
         {
             volume = getVolume();
-            Debug.Log("Volume : " + volume);
+            //Debug.Log("Volume : " + volume);
 
             Slider.value = volume;
 
-            if (Input.GetKeyDown(KeyCode.Y) && !micOpened)
+            if (Input.GetKeyDown(KeyCode.O) && !micOpened)
             {
                 micOpened = true;
                 openMicStart = Time.time;
             }
 
-            if (Time.time - openMicStart < timeToSpeak)
+            if (Time.time - openMicStart > timeToSpeak)
             {
+
                 micOpened = false;
             }
 
@@ -80,11 +81,13 @@ namespace MiniGames
                 if (volume > maxVolume)
                 {
                     maxVolume = volume;
+                    Debug.Log(maxVolume);
                 }
             }
 
             if (maxVolume > minimumVolumeForValidation && micOpened == false)
             {
+                Debug.Log(maxVolume);
                 Win();
             }
         }
