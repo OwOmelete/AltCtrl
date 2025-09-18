@@ -43,6 +43,7 @@ public class driving : MonoBehaviour
     [SerializeField] private GameObject prefabTree;
     private bool hasSpawnTree;
     private bool instantDeath;
+    public GameObject boom;
 
     private void Awake()
     {
@@ -172,6 +173,7 @@ public class driving : MonoBehaviour
             Debug.Log("instantDeath");
             // faire explosion et MORT
             instantDeath = true;
+            boom.SetActive(true);
         }
         else
         {
@@ -186,6 +188,11 @@ public class driving : MonoBehaviour
                 if (lifeDisplay != null && lifeDisplay.Length > 0 && lifeDisplay[idx] != null)
                     lifeDisplay[idx].enabled = true;
                 SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
+            }
+
+            if (pv <= 0)
+            {
+                boom.SetActive(true);
             }
         
             DoCollisionFeedback(other);
