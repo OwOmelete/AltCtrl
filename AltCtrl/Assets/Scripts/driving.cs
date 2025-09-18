@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using Unity.Mathematics;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -36,13 +35,7 @@ public class driving : MonoBehaviour
     private bool canLand = false;
     private bool wheelsOut = false;
     private bool isBraking = false;
-    [SerializeField] private TextureScroller ground;
-    [SerializeField] private Transform groundStart;
-    [SerializeField] private Transform groundEndLose;
-    [SerializeField] private Transform groundEndWin;
-    [SerializeField] private GameObject prefabTree;
-    private bool hasSpawnTree;
-    private bool instantDeath;
+    [SerializeField] private ScrollTexture ground;
 
     private void Awake()
     {
@@ -88,49 +81,18 @@ public class driving : MonoBehaviour
             transform.position = centerPosition.position;
         }
 
-        if (Time.time - GameManager.INSTANCE.startTime > GameManager.INSTANCE.timeBeforeBrake)
+        if (Time.time - GameManager.INSTANCE.startTime < GameManager.INSTANCE.timeBeforeBrake)
         {
             if (isBraking)
             {
-                Debug.Log("frein");
-                ground.targetSpeed = math.lerp(ground.targetSpeed, 0, Time.deltaTime);
-                if (hasSpawnTree == false)
-                {
-                    GameObject tree = Instantiate(prefabTree, groundStart);
-                    hasSpawnTree = true;
-                }
-                else
-                {
-                    groundStart.transform.GetChild(0).position =  math.lerp(groundStart.transform.GetChild(0).position, groundEndWin.position, Time.deltaTime);
-                }
-                
-                
                 
             }
             else
             {
                 
-                Debug.Log("pas frein");
-                ground.targetSpeed = math.lerp(ground.targetSpeed, 0, Time.deltaTime);
-                if (hasSpawnTree == false)
-                {
-                    GameObject tree = Instantiate(prefabTree, groundStart);
-                    hasSpawnTree = true;
-                }
-                else
-                {
-                    if (groundStart.transform.GetChild(0).position != null)
-                    {
-                        groundStart.transform.GetChild(0).position =  math.lerp(groundStart.transform.GetChild(0).position, groundEndLose.position, Time.deltaTime);
-                    }
-                    
-                }
             }
         }
     }
-
-    
-
 
     private void landed()
     {
@@ -165,33 +127,20 @@ public class driving : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.tag == "instantDeath" && instantDeath == false)
+        Destroy(other.gameObject);
+        if (lastObstacle != other)
         {
-            pv -= 3;
-            Debug.Log("instantDeath");
-            // faire explosion et MORT
-            instantDeath = true;
-        }
-        else
-        {
-            Destroy(other.gameObject);
-            if (lastObstacle != other)
-            {
-                pv -= 1;
-                Debug.Log("pv : " + pv);
-                lastObstacle = other;
+            pv -= 1;
+            Debug.Log("pv : " + pv);
+            lastObstacle = other;
             
-                int idx = Mathf.Clamp(2 - pv, 0, lifeDisplay.Length - 1);
-                if (lifeDisplay != null && lifeDisplay.Length > 0 && lifeDisplay[idx] != null)
-                    lifeDisplay[idx].enabled = true;
-                SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
-            }
-        
-            DoCollisionFeedback(other);
+            int idx = Mathf.Clamp(2 - pv, 0, lifeDisplay.Length - 1);
+            if (lifeDisplay != null && lifeDisplay.Length > 0 && lifeDisplay[idx] != null)
+                lifeDisplay[idx].enabled = true;
+            SoundManager.Instance.PlayRandomSFX(clips, 1f, 1f);
         }
         
-
+        DoCollisionFeedback(other);
     }
 
     private void DoCollisionFeedback(Collider other)
