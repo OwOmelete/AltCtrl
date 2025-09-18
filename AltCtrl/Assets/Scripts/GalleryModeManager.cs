@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,30 +9,32 @@ public class GalleryModeManager : MonoBehaviour
     public float TimeToAFK;
     public Coroutine CoroutineAfk;
     public bool Gaming, Starting, Ending, Win;
-    public bool ClickedOnce;    
-    private void Start()
+    public bool CD;   
+    private void Awake()
     {
-        if (GalleryModeManager.SINGLETON != null)
+        if (SINGLETON != null && SINGLETON!= this)
         {
-            Destroy(GalleryModeManager.SINGLETON);
+            Destroy(gameObject);
+            return;
         }
-        GalleryModeManager.SINGLETON = this;
+        SINGLETON = this;
         DontDestroyOnLoad(this);
         Starting = true;
     }
     public void Update()
     {
-        if ((Starting||Ending)&&Input.anyKeyDown)
+        if (Starting&&Input.anyKeyDown)
         {
-            if (ClickedOnce)
+            if (!CD)
             {
-                ClickedOnce = false;
                 StartGaming();
             }
-            else
+        }
+        else if (Ending && Input.anyKeyDown)
+        {
+            if (!CD)
             {
-                ClickedOnce = true;
-                //activer le texte qui dit de Go
+                AfkTimer(0);
             }
         }
     }
@@ -41,12 +44,19 @@ public class GalleryModeManager : MonoBehaviour
         if (CoroutineAfk != null) StopCoroutine(CoroutineAfk);
         CoroutineAfk = StartCoroutine(TimerToMenu(time));
     }
-
+    IEnumerator CoolDown(float x)
+    {
+        CD = true;
+        yield return new WaitForSeconds(x);
+        CD = false;
+    }
     IEnumerator TimerToMenu(float x)
     {
         yield return new WaitForSeconds(x);
         SceneManager.LoadScene("Menu");
+        StartCoroutine(ShowMenu(0));
         Starting = true;
+        Ending = false;
     }
     public void StartGaming()
     {
@@ -58,16 +68,36 @@ public class GalleryModeManager : MonoBehaviour
 
     public void EndingScreen()
     {
+        SceneManager.LoadScene("Menu");
+
         Gaming = false;
+        Ending = true;
         if (Win)
         {
-            SceneManager.LoadScene("Win");
+            StartCoroutine(CoolDown(3f));
+            StartCoroutine(ShowMenu(1));
+
         }
         else
         {
-            SceneManager.LoadScene("Loose");
+            StartCoroutine(CoolDown(3f));
+            StartCoroutine(ShowMenu(2));
+
         }
-        AfkTimer(10f);
+        AfkTimer(12f);
+    }
+    IEnumerator ShowMenu(int index)
+    {
+        while (SceneManager.GetActiveScene() != SceneManager.GetSceneByName("Menu"))
+        {
+            yield return null;
+        }
+        foreach (GameObject obj in MenuManager.SINGLETON.Panels)
+        {
+            obj.SetActive(false);
+        }
+        MenuManager.SINGLETON.Panels[index].SetActive(true);
+        Debug.Log(index);
     }
 
 }
