@@ -28,6 +28,10 @@ public class driving : MonoBehaviour
 
     // Interne
     private Tween _camShakeTween;
+    private bool canLand = false;
+    private bool wheelsOut = false;
+    private bool isBraking = false;
+    [SerializeField] private ScrollTexture ground;
 
     private void Awake()
     {
@@ -44,22 +48,59 @@ public class driving : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !grounded)
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            isBraking = true;
+        }
+        if (Time.time - GameManager.INSTANCE.startTime > GameManager.INSTANCE.timeBeforeLanding)
+        {
+            canLand = true;
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && !grounded && canLand)
         {
             grounded = true;
             isLanding = true;
             centerPosition.DOMoveY(centerPosition.position.y - landingDisplacement, landingDuration)
                 .SetEase(Ease.InOutQuad).OnComplete(landed);
         }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            wheelsOut = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            wheelsOut = false;
+        }
         if (isLanding)
         {
             transform.position = centerPosition.position;
+        }
+
+        if (Time.time - GameManager.INSTANCE.startTime < GameManager.INSTANCE.timeBeforeBrake)
+        {
+            if (isBraking)
+            {
+                
+            }
+            else
+            {
+                
+            }
         }
     }
 
     private void landed()
     {
+        if (!wheelsOut)
+        {
+            pv -= 1;
+            DoCollisionFeedback(null);
+        }
+        GameManager.INSTANCE.canSpawnObstacle = true;
         GameManager.INSTANCE.landed = true;
+        Debug.Log(GameManager.INSTANCE.canSpawnObstacle);
+        GameManager.INSTANCE.spawnInterval = 1;
         isLanding = false;
     }
 
@@ -128,11 +169,13 @@ public class driving : MonoBehaviour
             }
             else
             {
-                spawnPos = other != null ? other.ClosestPoint(transform.position) : transform.position;
-                spawnRot = Quaternion.identity;
+                if (other != null)
+                {
+                    spawnPos = other != null ? other.ClosestPoint(transform.position) : transform.position;
+                    spawnRot = Quaternion.identity;
+                    Instantiate(spawnPrefab, spawnPos, spawnRot , spawnPoint);
+                }
             }
-
-            Instantiate(spawnPrefab, spawnPos, spawnRot , spawnPoint);
         }
     }
 

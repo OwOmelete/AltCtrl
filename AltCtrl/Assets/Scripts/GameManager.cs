@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform spawnOriginRight;
     [SerializeField] private Transform spawnOriginDown;
     [SerializeField] private Transform spawnOriginLanding;
-    [SerializeField] private float spawnInterval;
+    [SerializeField] public float spawnInterval;
     [SerializeField] private driving driving;
     [SerializeField] private int MiniGameIntervalPhase1;
     [SerializeField] private int MiniGameIntervalPhase2;
@@ -35,14 +35,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase3;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase4;
     [SerializeField] private AbstractMiniGame[] MiniGamesPhase5;
+    [SerializeField] private AbstractMiniGame MajorEvent1;
+    [SerializeField] private AbstractMiniGame MajorEvent2;
+    [SerializeField] private AbstractMiniGame MajorEvent3;
+    [SerializeField] private AbstractMiniGame MajorEvent4;
     private float lastSpawn;
     private float lastMiniGame;
     [HideInInspector] public float startTime;
     [HideInInspector] public bool landed;
-    public float timeBeforeObstacleSpawningStop = 300;
-    public float timeBeforeLanding = 310;
-    private bool canSpawnObstacle = true;
-    
+    public float timeBeforeObstacleSpawningStop = 240;
+    public float timeBeforeLanding = 250;
+    public bool canSpawnObstacle = true;
+    [SerializeField] private GameObject picto;
+    public float timeBeforeBrake = 300;
     private void Awake()
     {
         INSTANCE = this;
@@ -59,18 +64,23 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time - startTime > timeBeforeObstacleSpawningStop)
+        if (Time.time - startTime > timeBeforeObstacleSpawningStop && !landed)
         {
-            canSpawnObstacle = false;
+            canSpawnObstacle = false; 
+            picto.SetActive(true);
         }
 
-        if (canSpawnObstacle)
+        if (canSpawnObstacle && Time.time - startTime > timeBeforeBrake)
         {
             if (Time.time - lastSpawn > spawnInterval)
             {
                 SpawnObstacle();
                 lastSpawn = Time.time;
             }
+        }
+        else
+        {
+            canSpawnObstacle = false;
         }
         
         if (Time.time - lastMiniGame > miniGameInterval)
@@ -107,19 +117,25 @@ public class GameManager : MonoBehaviour
 
     private void SpawnObstacle()
     {
-        int r = Random.Range(0, 5);
+        int r = Random.Range(0, 3);
         Vector3 spawn = Vector3.zero;
         spawn = getPosition(r);
         GameObject obs = obstacle;
-        if (r == 1)
+        if (r == 0)
         {
             obs = MountainLeft;
             spawn = spawnOriginLeft.position;
         }
-        if (r == 2)
+        if (r == 1)
         {
             obs = MountainRight;
             spawn = spawnOriginRight.position;
+        }
+
+        if (r == 2)
+        {
+            obs = MountainDown;
+            spawn = spawnOriginDown.position;
         }
         Instantiate(obs, spawn, Quaternion.identity);
     }
@@ -127,16 +143,20 @@ public class GameManager : MonoBehaviour
     IEnumerator timer()
     {
         yield return new WaitForSeconds(60);
+        MajorEvent1.enabled = true;
         miniGameInterval = MiniGameIntervalPhase2;
         miniGamesList = MiniGamesPhase2.ToList();
         yield return new WaitForSeconds(60);
+        MajorEvent2.enabled = true;
         spawnInterval = 6;
         miniGameInterval = MiniGameIntervalPhase3;
         miniGamesList = MiniGamesPhase3.ToList();
         yield return new WaitForSeconds(60);
+        MajorEvent3.enabled = true;
         miniGameInterval = MiniGameIntervalPhase4;
         miniGamesList = MiniGamesPhase4.ToList();
         yield return new WaitForSeconds(60);
+        MajorEvent4.enabled = true;
         miniGameInterval = MiniGameIntervalPhase5;
         miniGamesList = MiniGamesPhase5.ToList();
         spawnInterval = 4;
