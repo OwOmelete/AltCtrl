@@ -1327,6 +1327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displacement: 3
+  MovementSpeed: 0.1
   pv: 3
   landingSpeed: 10
   landingDisplacement: 25
