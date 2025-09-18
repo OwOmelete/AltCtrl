@@ -1445,6 +1445,7 @@ MonoBehaviour:
   targetCamera: {fileID: 330585545}
   shakeIntensity: 0.6
   shakeDuration: 0.25
+  ground: {fileID: 1258797937}
 --- !u!65 &330585549
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3852,7 +3853,7 @@ Transform:
   m_GameObject: {fileID: 1007253956}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27778673, y: -2.5836978, z: 20.41}
+  m_LocalPosition: {x: 0.27778673, y: -5.24, z: 20.41}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4500,6 +4501,7 @@ MonoBehaviour:
   timeBeforeLanding: 250
   canSpawnObstacle: 1
   picto: {fileID: 1291972260}
+  timeBeforeBrake: 300
 --- !u!114 &1153397422
 MonoBehaviour:
   m_ObjectHideFlags: 0
