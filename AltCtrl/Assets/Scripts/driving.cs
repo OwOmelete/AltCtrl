@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 public class driving : MonoBehaviour
 {
     public float displacement;
-    
     private bool grounded = false;
     [SerializeField] private int pv = 3;
     private Collider lastObstacle;
@@ -19,12 +18,26 @@ public class driving : MonoBehaviour
     [SerializeField] private Transform centerPosition;
     [SerializeField] private Image[] lifeDisplay;
 
+    [Header("collision")]
+    [SerializeField] private GameObject spawnPrefab;
+    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Camera targetCamera;
+    [SerializeField] private float shakeIntensity = 0.6f;
+    [SerializeField] private float shakeDuration = 0.25f;
+
+    // Interne
+    private Tween _camShakeTween;
+
+    private void Awake()
+    {
+        if (!targetCamera) targetCamera = Camera.main;
+    }
 
     private void Start()
     {
         foreach (var img in lifeDisplay)
         {
-            img.enabled = false;
+            if (img) img.enabled = false;
         }
     }
 
@@ -38,7 +51,7 @@ public class driving : MonoBehaviour
                 .SetEase(Ease.InOutQuad).OnComplete(landed);
             //StartCoroutine(landing());
         }
-        if(isLanding)
+        if (isLanding)
         {
             transform.position = centerPosition.position;
         }
@@ -48,6 +61,7 @@ public class driving : MonoBehaviour
     {
         isLanding = false;
     }
+
     private void FixedUpdate()
     {
         Vector3 pos = new Vector3();
@@ -55,7 +69,7 @@ public class driving : MonoBehaviour
         {
             if (grounded)
             {
-                pos += centerPosition.position + new Vector3(Input.GetAxisRaw("Horizontal") * displacement,0, 0);
+                pos += centerPosition.position + new Vector3(Input.GetAxisRaw("Horizontal") * displacement, 0, 0);
             }
             else
             {
@@ -63,7 +77,6 @@ public class driving : MonoBehaviour
             }
             transform.position = pos;
         }
-        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -74,7 +87,51 @@ public class driving : MonoBehaviour
             pv -= 1;
             Debug.Log("pv : " + pv);
             lastObstacle = other;
-            lifeDisplay[2 - pv].enabled = true;
+            
+            int idx = Mathf.Clamp(2 - pv, 0, lifeDisplay.Length - 1);
+            if (lifeDisplay != null && lifeDisplay.Length > 0 && lifeDisplay[idx] != null)
+                lifeDisplay[idx].enabled = true;
+        }
+        
+        DoCollisionFeedback(other);
+    }
+
+    private void DoCollisionFeedback(Collider other)
+    {
+        if (targetCamera != null)
+        {
+            _camShakeTween?.Kill(true);
+            
+            int vibrato = 18;
+            float randomness = 90f;
+            
+            _camShakeTween = targetCamera.transform.DOShakePosition(
+                duration: shakeDuration,
+                strength: new Vector3(shakeIntensity, shakeIntensity, 0f),
+                vibrato: vibrato,
+                randomness: randomness,
+                snapping: false,
+                fadeOut: true
+            );
+        }
+        
+        if (spawnPrefab != null)
+        {
+            Vector3 spawnPos;
+            Quaternion spawnRot;
+
+            if (spawnPoint != null)
+            {
+                spawnPos = spawnPoint.position;
+                spawnRot = spawnPoint.rotation;
+            }
+            else
+            {
+                spawnPos = other != null ? other.ClosestPoint(transform.position) : transform.position;
+                spawnRot = Quaternion.identity;
+            }
+
+            Instantiate(spawnPrefab, spawnPos, spawnRot , spawnPoint);
         }
     }
 
